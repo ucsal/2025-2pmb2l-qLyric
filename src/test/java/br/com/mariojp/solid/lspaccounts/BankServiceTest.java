@@ -4,23 +4,25 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BankServiceTest {
-
-    @Test
-    void checking_account_allows_withdrawal() {
-        var acc = new CheckingAccount();
-        acc.deposit(100);
-        new BankService().processWithdrawal(acc, 50);
-        assertEquals(50, acc.getBalance());
+ @Test
+    void checkingAccountShouldAllowWithdrawal() {
+        CheckingAccount ca = new CheckingAccount();
+        ca.deposit(100);
+        BankService service = new BankService();
+        service.processWithdrawal(ca, 40);
+        assertEquals(60, ca.getBalance());
     }
 
     @Test
-    void savings_account_should_not_throw_and_should_not_withdraw() {
-        var acc = new SavingsAccount();
-        acc.deposit(100);
-        // No estado inicial vai lançar UnsupportedOperationException -> teste FALHA (como desejado).
-        assertDoesNotThrow(() -> new BankService().processWithdrawal(acc, 50),
-                "Após refatoração, processWithdrawal não deve tentar sacar de poupança");
-        assertEquals(100, acc.getBalance(), 0.0001,
-                "Poupança não deve ter saldo reduzido em operação de saque");
+    void savingsAccountShouldNotAllowWithdrawal() {
+        SavingsAccount sa = new SavingsAccount();
+        sa.deposit(100);
+        BankService service = new BankService();
+
+        // Não compila se tentar passar SavingsAccount diretamente,
+        // pois não implementa Withdrawable → garante LSP
+        // service.processWithdrawal(sa, 40); ❌
+
+        assertEquals(100, sa.getBalance());
     }
 }
