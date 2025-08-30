@@ -6,13 +6,15 @@ public class Main {
     public static void main(String[] args) {
         CheckingAccount checking = new CheckingAccount();
         checking.deposit(100);
-        new BankService().processWithdrawal(checking, 30);
+
+        BankService bankService = new BankService();
+        bankService.processWithdrawal(checking, 30);
+
         System.out.println("Checking balance: " + checking.getBalance()); // 70.0
 
         SavingsAccount savings = new SavingsAccount();
         savings.deposit(100);
-        // Estado inicial: irá lançar UnsupportedOperationException (ilustra o problema LSP).
-        new BankService().processWithdrawal(savings, 30);
-        System.out.println("Savings balance: " + savings.getBalance());
+
+        System.out.println("Savings balance: " + savings.getBalance()); // 100.0
     }
 }
